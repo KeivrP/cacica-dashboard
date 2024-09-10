@@ -56,7 +56,6 @@ export function UserView() {
 
       <Card>
         <UserTableToolbar
-          //numSelected={table.selected.length}
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);

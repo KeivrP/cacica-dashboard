@@ -1,8 +1,7 @@
 {
-  "name": "@minimal/material-kit-react",
-  "author": "minimals.cc",
-  "licence": "MIT",
-  "version": "2.0.0",
+  "name": "cacica-dahsboard",
+  "author": "Keiver Pacheco",
+  "version": "1.0.0",
   "private": false,
   "type": "module",
   "scripts": {
