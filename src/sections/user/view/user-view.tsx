@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -9,12 +9,12 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
+import { useGetUsers } from '../hook/useUser';
 import { TableNoData } from '../table-no-data';
 import { UserTableRow } from '../user-table-row';
 import { UserTableHead } from '../user-table-head';
@@ -22,25 +22,30 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-import type { UserProps } from '../user-table-row';
-import { useGetUsers } from '../hook/useUser';
+import type { Users } from '../user-types';
+import { NewUsuarios } from './user-new';
 
 // ----------------------------------------------------------------------
 
 export function UserView() {
- const {data, isLoading, error} = useGetUsers();
+  const { data } = useGetUsers();
+  const [open, setOpen] = useState(false);
 
-console.log(data);
+  function handleClose() {
+    setOpen(false);
+  }
+
+  const UserData: Users[] = useMemo(() => data ?? [], [data]);
+
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: UserProps[] = applyFilter({
-    inputData: data,
+  const dataFiltered: Users[] = applyFilter({
+    inputData: UserData || [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
-console.log(filterName);  
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -50,6 +55,7 @@ console.log(filterName);
           Usuarios
         </Typography>
         <Button
+          onClick={() => setOpen(true)}
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
@@ -73,16 +79,15 @@ console.log(filterName);
               <UserTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={UserData.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
-               
+
                 headLabel={[
                   { id: 'name', label: 'Nombre' },
-                  { id: 'company', label: 'Email' },
+                  { id: 'email', label: 'Email' },
                   { id: 'role', label: 'Rol' },
-                  { id: 'isVerified', label: 'Ciudad', align: 'center' },
-                  { id: 'status', label: 'Estatus' },
+                  { id: 'branch', label: 'Sucursales' },
                   { id: '' },
                 ]}
               />
@@ -90,7 +95,7 @@ console.log(filterName);
                 {dataFiltered
                   .slice(
                     table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
+                    table.page * table.rowsPerPage + table.rowsPerPage,
                   )
                   .map((row) => (
                     <UserTableRow
@@ -103,7 +108,7 @@ console.log(filterName);
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, UserData.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -115,13 +120,15 @@ console.log(filterName);
         <TablePagination
           component="div"
           page={table.page}
-          count={data.length}
+          count={0}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
       </Card>
+
+      <NewUsuarios openF={open} handleCloseF={() => handleClose()} />
     </DashboardContent>
   );
 }
@@ -141,7 +148,7 @@ export function useTable() {
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(id);
     },
-    [order, orderBy]
+    [order, orderBy],
   );
 
   const onSelectAllRows = useCallback((checked: boolean, newSelecteds: string[]) => {
@@ -160,7 +167,7 @@ export function useTable() {
 
       setSelected(newSelected);
     },
-    [selected]
+    [selected],
   );
 
   const onResetPage = useCallback(() => {
@@ -176,7 +183,7 @@ export function useTable() {
       setRowsPerPage(parseInt(event.target.value, 10));
       onResetPage();
     },
-    [onResetPage]
+    [onResetPage],
   );
 
   return {

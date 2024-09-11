@@ -9,29 +9,40 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
-import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
+
+import { CreateUsers, type Users } from './user-types';
+import { NewUsuarios } from './view/user-new';
 
 // ----------------------------------------------------------------------
 
-export type UserProps = {
-  id: string;
-  name: string;
-  role: string;
-  status: string;
-  company: string;
-  avatarUrl: string;
-  isVerified: boolean;
-};
+
 
 type UserTableRowProps = {
-  row: UserProps;
+  row: Users;
   selected: boolean;
   onSelectRow: () => void;
 };
 
-export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
+export function UserTableRow({ row, selected }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = useState(false);
+  const [userData, setUserData] = useState<CreateUsers>();
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const handeSelectRow = useCallback(() => {
+    setOpenPopover(null);
+    setUserData({
+      name: row.name,
+      email: row.email,
+      roleId: row.role.id,
+      branchId: row.branch.id,
+    });   
+    setOpen(true);
+  }, []);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
@@ -54,18 +65,11 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
         <TableCell>{row.email}</TableCell>
 
-        <TableCell>{row.role}</TableCell>
+        <TableCell>{row.role?.name}</TableCell>
 
-        <TableCell align="center">
-          {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
-          ) : (
-            '-'
-          )}
-        </TableCell>
 
         <TableCell>
-          <Label color={/* (row.status === 'banned' && 'error') ||  */'success'}>Activo</Label>
+          {row.branch?.name}
         </TableCell>
 
         <TableCell align="right">
@@ -98,7 +102,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem onClick={handeSelectRow}>
             <Iconify icon="solar:pen-bold" />
             Edit
           </MenuItem>
@@ -109,6 +113,8 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </MenuItem>
         </MenuList>
       </Popover>
+      <NewUsuarios userData={userData} openF={open} handleCloseF={() => handleClose()} />
+
     </>
   );
 }

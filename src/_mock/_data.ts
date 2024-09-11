@@ -14,9 +14,9 @@ import {
 // ----------------------------------------------------------------------
 
 export const _myAccount = {
-  displayName: 'Jaydon Frankie',
-  email: 'demo@minimals.cc',
-  photoURL: '/assets/images/avatar/avatar-25.webp',
+  displayName: 'Nayvic Acosta',
+  email: 'naybonita@example.com',
+  photoURL: '/assets/images/avatar/nay.png',
 };
 
 // ----------------------------------------------------------------------
@@ -143,14 +143,14 @@ export const _tasks = [...Array(5)].map((_, index) => ({
 export const _notifications = [
   {
     id: _id(1),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
+    title: 'Aun no manejaremos esto',
+    description: 'Comming soon',
     avatarUrl: null,
     type: 'order-placed',
     postedAt: _times(1),
     isUnRead: true,
   },
-  {
+ /*  {
     id: _id(2),
     title: _fullName(2),
     description: 'answered to your comment on the Minimal',
@@ -185,5 +185,5 @@ export const _notifications = [
     type: 'order-shipped',
     postedAt: _times(5),
     isUnRead: false,
-  },
+  }, */
 ];

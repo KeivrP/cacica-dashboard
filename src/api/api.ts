@@ -1,35 +1,32 @@
-import axios from 'axios';
+import axios, { type AxiosInstance } from "axios";
 
-console.log(import.meta.env.VITE_REACT_API_URL);
+export const createApiInstance = async (): Promise<AxiosInstance> => {
+  const api = axios.create({
+    baseURL: 'https://cacica-backend.onrender.com/api/v1',
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json", // Use JSON for most requests
+      // Authorization: `Bearer ${token}`,
+    },
+  });
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_REACT_API_URL,
-});
+/*   // Enable CORS for your API server
+  api.interceptors.request.use(async (config) => {
+    config.headers["Authorization"] = `Bearer ${token}`;
+    return config;
+  });
 
-// Interceptor de solicitud
-api.interceptors.request.use(
-  (config) => 
-    // Puedes agregar headers o modificar la configuración aquí si es necesario
-     config
-  ,
-  (error) => {
-    console.error(`Error en la solicitud: ${error.message}`);
-    return Promise.reject(error);
-  }
-);
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response.status === 401) {
+        // Handle authentication errors
+        console.error("Authentication error:", error);
+        // Redirect to login or refresh token
+      }
+      return Promise.reject(error);
+    }
+  ); */
 
-// Interceptor de respuesta
-api.interceptors.response.use(
-  (response) => 
-    // Aquí puedes realizar modificaciones en la respuesta si es necesario
-     response
-  ,
-  (error) => {
-    console.error(
-      `Error en la respuesta: ${error.response ? error.response.status : error.message}`
-    );
-    return Promise.reject(error);
-  }
-);
-
-export default api;
+  return api;
+};
