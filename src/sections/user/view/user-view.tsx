@@ -23,20 +23,24 @@ import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
 import type { UserProps } from '../user-table-row';
+import { useGetUsers } from '../hook/useUser';
 
 // ----------------------------------------------------------------------
 
 export function UserView() {
+ const {data, isLoading, error} = useGetUsers();
+
+console.log(data);
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
 
   const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+    inputData: data,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
-
+console.log(filterName);  
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -111,7 +115,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={data.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
