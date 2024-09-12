@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, Suspense } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -77,7 +77,7 @@ export function UserView() {
         />
 
         <Scrollbar>
-          <Suspense fallback={renderFallback}>
+          {isLoading ? renderFallback : (
 
             <TableContainer sx={{ overflow: 'unset' }}>
               <Table sx={{ minWidth: 800 }}>
@@ -121,7 +121,7 @@ export function UserView() {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Suspense>
+          )}
         </Scrollbar>
 
         <TablePagination

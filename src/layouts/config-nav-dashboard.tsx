@@ -1,5 +1,5 @@
-import { Label } from 'src/components/label';
-import { SvgColor } from 'src/components/svg-color';
+import { Label } from '../components/label';
+import { SvgColor } from '../components/svg-color';
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ export const navData = [
     icon: icon('ic-analytics'),
   },
   {
-    title: 'Usuario',
+    title: 'Usuarios',
     path: '/user',
     icon: icon('ic-user'),
   },
@@ -29,8 +29,8 @@ export const navData = [
     ),
   },
   {
-    title: 'Obejtivos',
-    path: '/404', // blog
+    title: 'Objetivos',
+    path: '/targets', // blog
     icon: icon('ic-blog'),
   },
 /*   {
