@@ -1,14 +1,20 @@
-import { useQuery } from '@tanstack/react-query';
-import { getUsers } from '../../../api/users/user-api';
-import { getRoles } from '../../../api/users/role-api';
-import { getBranch } from '../../../api/users/branch-api';
-
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  changeStatusUser,
+  createUser,
+  getUsers,
+  updateUser,
+} from "../../../api/users/user-api";
+import { getRoles } from "../../../api/users/role-api";
+import { getBranch } from "../../../api/users/branch-api";
+import { useCustomSnackbar } from "../../../components/ui/Snack";
 
 export const useGetUsers = () => {
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['usuarios'],
+    queryKey: ["usuarios"],
     queryFn: getUsers,
-    
+    retry: 10, // Retry the request up to 5 times
+    retryDelay: (attempt) => attempt * 1000, // Delay between retries, increasing with each attempt
   });
 
   return { data, isLoading, error, refetch };
@@ -16,20 +22,62 @@ export const useGetUsers = () => {
 
 export const useRoles = () => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['roles'],
+    queryKey: ["roles"],
     queryFn: getRoles,
-    
   });
 
   return { data, isLoading, error };
-}
+};
 
 export const useBranch = () => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['branch'],
+    queryKey: ["branch"],
     queryFn: getBranch,
-    
   });
 
   return { data, isLoading, error };
-}
+};
+
+export const useCreateUser = () => {
+  const getuser = useGetUsers();
+  return useMutation({
+    mutationKey: ["createUser"],
+    mutationFn: createUser,
+    onSuccess: () => {
+      void getuser.refetch();
+    },
+    onError: (error) => {
+      console.log("Error al crear usuario", error.message);
+    },
+  });
+};
+
+export const useUpdateUser = () => {
+  const getuser = useGetUsers();
+  return useMutation({
+    mutationKey: ["updateUser"],
+    mutationFn: updateUser,
+    onSuccess: () => {
+      void getuser.refetch();
+    },
+    onError: (error) => {
+      console.log("Error al actualizar usuario", error.message);
+    },
+  });
+};
+
+export const useChangeStatusUser = () => {
+  const getuser = useGetUsers();
+const { eSnack } = useCustomSnackbar();
+  return useMutation({
+    mutationKey: ["changeStatusUser"],
+    mutationFn: changeStatusUser,
+    onSuccess: () => {
+      eSnack("Estado de usuario cambiado correctamente");
+      void getuser.refetch();
+    },
+    onError: (error) => {
+      console.log("Error al cambiar estado de usuario", error.message);
+    },
+  });
+};

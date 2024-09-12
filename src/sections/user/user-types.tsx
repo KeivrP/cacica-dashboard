@@ -5,9 +5,11 @@ export interface Users {
     id: string;
     name: string;
     role: Role ;
+    is_active: boolean;
 }
 
 export interface CreateUsers {
+    id?: string;
     avatar_url?: string;
     branchId: string;
     email: string;

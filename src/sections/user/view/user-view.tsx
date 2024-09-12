@@ -9,10 +9,10 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { DashboardContent } from 'src/layouts/dashboard';
+import { DashboardContent } from '../../../layouts/dashboard';
 
-import { Iconify } from 'src/components/iconify';
-import { Scrollbar } from 'src/components/scrollbar';
+import { Iconify } from '../../..//components/iconify';
+import { Scrollbar } from '../../..//components/scrollbar';
 
 import { useGetUsers } from '../hook/useUser';
 import { TableNoData } from '../table-no-data';
@@ -28,24 +28,26 @@ import { NewUsuarios } from './user-new';
 // ----------------------------------------------------------------------
 
 export function UserView() {
-  const { data } = useGetUsers();
+  const { data, isLoading } = useGetUsers();
   const [open, setOpen] = useState(false);
 
   function handleClose() {
     setOpen(false);
   }
 
-  const UserData: Users[] = useMemo(() => data ?? [], [data]);
+  const UserData: Users[] = useMemo(() => data ?? [], [data, isLoading]);
 
+  
   const table = useTable();
-
+  
   const [filterName, setFilterName] = useState('');
-
+  
   const dataFiltered: Users[] = applyFilter({
     inputData: UserData || [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
+  
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -88,6 +90,7 @@ export function UserView() {
                   { id: 'email', label: 'Email' },
                   { id: 'role', label: 'Rol' },
                   { id: 'branch', label: 'Sucursales' },
+                  { id: 'is_verified', label: 'Estatus' },
                   { id: '' },
                 ]}
               />
@@ -120,7 +123,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={0}
+          count={dataFiltered.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -174,7 +177,7 @@ export function useTable() {
     setPage(0);
   }, []);
 
-  const onChangePage = useCallback((event: unknown, newPage: number) => {
+  const onChangePage = useCallback((_event: unknown, newPage: number) => {
     setPage(newPage);
   }, []);
 
