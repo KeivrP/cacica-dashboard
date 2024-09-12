@@ -1,7 +1,5 @@
-import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Iconify } from '../../components/iconify';
@@ -48,7 +46,7 @@ export function UserTableToolbar({ numSelected = 0, filterName, onFilterName }: 
         />
       )}
 
-      {numSelected > 0 ? (
+      {/* {numSelected ? (
         <Tooltip title="Delete">
           <IconButton>
             <Iconify icon="solar:trash-bin-trash-bold" />
@@ -60,7 +58,7 @@ export function UserTableToolbar({ numSelected = 0, filterName, onFilterName }: 
             <Iconify icon="ic:round-filter-list" />
           </IconButton>
         </Tooltip>
-      )}
+      )} */}
     </Toolbar>
   );
 }

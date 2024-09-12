@@ -129,7 +129,7 @@ export function UserTableRow({ row, selected }: UserTableRowProps) {
         >
           <MenuItem onClick={handeSelectRow}>
             <Iconify icon="solar:pen-bold" />
-            Edit
+            Editar
           </MenuItem>
 
           {!row.is_active ? (

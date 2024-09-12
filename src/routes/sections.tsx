@@ -19,7 +19,7 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
 
-const renderFallback = (
+export const renderFallback = (
   <Box display="flex" alignItems="center" justifyContent="center" flex="1 1 auto">
     <LinearProgress
       sx={{

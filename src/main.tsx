@@ -7,6 +7,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import App from "./app";
 import queryClient from "./api/query-client";
 import { BackdropGlobal } from "./components/ui/backdrop";
+import { SnackbarProvider } from "notistack";
 
 // ----------------------------------------------------------------------
 
@@ -16,16 +17,18 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <BackdropGlobal>
-    <StrictMode>
-      <HelmetProvider>
-        <BrowserRouter>
-          <Suspense>
-            <QueryClientProvider client={queryClient}>
-              <App />
-            </QueryClientProvider>
-          </Suspense>
-        </BrowserRouter>
-      </HelmetProvider>
-    </StrictMode>
+    <SnackbarProvider>
+      <StrictMode>
+        <HelmetProvider>
+          <BrowserRouter>
+            <Suspense>
+              <QueryClientProvider client={queryClient}>
+                <App />
+              </QueryClientProvider>
+            </Suspense>
+          </BrowserRouter>
+        </HelmetProvider>
+      </StrictMode>
+    </SnackbarProvider>
   </BackdropGlobal>
 );

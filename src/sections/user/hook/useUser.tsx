@@ -40,27 +40,34 @@ export const useBranch = () => {
 
 export const useCreateUser = () => {
   const getuser = useGetUsers();
+  const { eSnack, sSnack } = useCustomSnackbar();
+
   return useMutation({
     mutationKey: ["createUser"],
     mutationFn: createUser,
     onSuccess: () => {
+      sSnack("Usuario creado correctamente");
       void getuser.refetch();
     },
     onError: (error) => {
-      console.log("Error al crear usuario", error.message);
+      eSnack("Error al crear usuario" + error.message);
     },
   });
 };
 
 export const useUpdateUser = () => {
   const getuser = useGetUsers();
+  const { eSnack, sSnack } = useCustomSnackbar();
+
   return useMutation({
     mutationKey: ["updateUser"],
     mutationFn: updateUser,
     onSuccess: () => {
+      sSnack("Usuario actualizado correctamente");
       void getuser.refetch();
     },
     onError: (error) => {
+      eSnack("Error al actualizar usuario" + error.message);
       console.log("Error al actualizar usuario", error.message);
     },
   });
@@ -68,16 +75,16 @@ export const useUpdateUser = () => {
 
 export const useChangeStatusUser = () => {
   const getuser = useGetUsers();
-const { eSnack } = useCustomSnackbar();
+  const { eSnack, sSnack } = useCustomSnackbar();
   return useMutation({
     mutationKey: ["changeStatusUser"],
     mutationFn: changeStatusUser,
     onSuccess: () => {
-      eSnack("Estado de usuario cambiado correctamente");
+      sSnack("Estado de usuario cambiado correctamente");
       void getuser.refetch();
     },
     onError: (error) => {
-      console.log("Error al cambiar estado de usuario", error.message);
+      eSnack("Error al cambiar estado de usuario " + error.message);
     },
   });
 };

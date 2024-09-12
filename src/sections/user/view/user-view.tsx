@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, Suspense } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -24,6 +24,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 
 import type { Users } from '../user-types';
 import { NewUsuarios } from './user-new';
+import { renderFallback } from '../../../routes/sections';
 
 // ----------------------------------------------------------------------
 
@@ -37,17 +38,17 @@ export function UserView() {
 
   const UserData: Users[] = useMemo(() => data ?? [], [data, isLoading]);
 
-  
+
   const table = useTable();
-  
+
   const [filterName, setFilterName] = useState('');
-  
+
   const dataFiltered: Users[] = applyFilter({
     inputData: UserData || [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
-  
+
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -76,48 +77,51 @@ export function UserView() {
         />
 
         <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
-                order={table.order}
-                orderBy={table.orderBy}
-                rowCount={UserData.length}
-                numSelected={table.selected.length}
-                onSort={table.onSort}
+          <Suspense fallback={renderFallback}>
 
-                headLabel={[
-                  { id: 'name', label: 'Nombre' },
-                  { id: 'email', label: 'Email' },
-                  { id: 'role', label: 'Rol' },
-                  { id: 'branch', label: 'Sucursales' },
-                  { id: 'is_verified', label: 'Estatus' },
-                  { id: '' },
-                ]}
-              />
-              <TableBody>
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage,
-                  )
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                    />
-                  ))}
+            <TableContainer sx={{ overflow: 'unset' }}>
+              <Table sx={{ minWidth: 800 }}>
+                <UserTableHead
+                  order={table.order}
+                  orderBy={table.orderBy}
+                  rowCount={UserData.length}
+                  numSelected={table.selected.length}
+                  onSort={table.onSort}
 
-                <TableEmptyRows
-                  height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, UserData.length)}
+                  headLabel={[
+                    { id: 'name', label: 'Nombre' },
+                    { id: 'email', label: 'Email' },
+                    { id: 'role', label: 'Rol' },
+                    { id: 'branch', label: 'Sucursales' },
+                    { id: 'is_verified', label: 'Estatus' },
+                    { id: '' },
+                  ]}
                 />
+                <TableBody>
+                  {dataFiltered
+                    .slice(
+                      table.page * table.rowsPerPage,
+                      table.page * table.rowsPerPage + table.rowsPerPage,
+                    )
+                    .map((row) => (
+                      <UserTableRow
+                        key={row.id}
+                        row={row}
+                        selected={table.selected.includes(row.id)}
+                        onSelectRow={() => table.onSelectRow(row.id)}
+                      />
+                    ))}
 
-                {notFound && <TableNoData searchQuery={filterName} />}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  <TableEmptyRows
+                    height={68}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, UserData.length)}
+                  />
+
+                  {notFound && <TableNoData searchQuery={filterName} />}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Suspense>
         </Scrollbar>
 
         <TablePagination
