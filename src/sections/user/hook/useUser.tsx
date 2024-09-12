@@ -7,7 +7,7 @@ import {
 } from "../../../api/users/user-api";
 import { getRoles } from "../../../api/users/role-api";
 import { getBranch } from "../../../api/users/branch-api";
-import { useCustomSnackbar } from "../../../components/ui/Snack";
+import { useCustomSnackbar } from "../../../components/ui/snack";
 
 export const useGetUsers = () => {
   const { data, isLoading, error, refetch } = useQuery({
