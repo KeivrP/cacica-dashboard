@@ -1,71 +1,100 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from "react";
 
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Popover from '@mui/material/Popover';
-import TableRow from '@mui/material/TableRow';
-import MenuList from '@mui/material/MenuList';
-import TableCell from '@mui/material/TableCell';
-import IconButton from '@mui/material/IconButton';
-import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Popover from "@mui/material/Popover";
+import TableRow from "@mui/material/TableRow";
+import MenuList from "@mui/material/MenuList";
+import TableCell from "@mui/material/TableCell";
+import IconButton from "@mui/material/IconButton";
+import MenuItem, { menuItemClasses } from "@mui/material/MenuItem";
 
-import { Label } from 'src/components/label';
-import { Iconify } from 'src/components/iconify';
+import { Iconify } from "../../components/iconify";
+
+import { CreateUsers, type Users } from "./user-types";
+import { NewUsuarios } from "./view/user-new";
+import { Label } from "../../components/label";
+import { useChangeStatusUser } from "./hook/useUser";
+import { useBackdrop } from "../../components/ui/backdrop";
 
 // ----------------------------------------------------------------------
 
-export type UserProps = {
-  id: string;
-  name: string;
-  role: string;
-  status: string;
-  company: string;
-  avatarUrl: string;
-  isVerified: boolean;
-};
-
 type UserTableRowProps = {
-  row: UserProps;
+  row: Users;
   selected: boolean;
   onSelectRow: () => void;
 };
 
-export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
-  const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+export function UserTableRow({ row, selected }: UserTableRowProps) {
+  const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
+    null
+  );
+  const [open, setOpen] = useState(false);
+  const [userData, setUserData] = useState<CreateUsers>();
+  const { mutate, isPending, isSuccess }  = useChangeStatusUser();
+  const { showLoading, hideLoading } = useBackdrop();
 
-  const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenPopover(event.currentTarget);
+  useEffect(() => {
+    if (isPending) {
+      showLoading('');
+    } else {
+      hideLoading();
+    }
+  }, [isPending, isSuccess]);
+
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
   }, []);
+
+  const handeSelectRow = useCallback(() => {
+    setOpenPopover(null);
+    setUserData({
+      id: row.id,
+      name: row.name,
+      email: row.email,
+      roleId: row.role.id,
+      branchId: row.branch.id,
+    });
+    setOpen(true);
+  }, []);
+
+  const handleOpenPopover = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setOpenPopover(event.currentTarget);
+    },
+    []
+  );
 
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
+  }, []);
+  
+  const handleStatusUser = useCallback(() => {
+    setOpenPopover(null);
+    mutate(row.id);
   }, []);
 
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
-
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.name} src={row.avatarUrl} />
+            <Avatar alt={row.name} src={row.avatar_url} />
             {row.name}
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
+        <TableCell>{row.email}</TableCell>
 
-        <TableCell>{row.role}</TableCell>
+        <TableCell>{row.role?.name}</TableCell>
 
-        <TableCell align="center">
-          {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
-          ) : (
-            '-'
-          )}
-        </TableCell>
+        <TableCell>{row.branch?.name}</TableCell>
 
         <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
+          <Label color={row.is_active ? "success" : "error"}>
+            {row.is_active ? "Activo" : "Inactivo"}
+          </Label>
         </TableCell>
 
         <TableCell align="right">
@@ -79,8 +108,8 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
         open={!!openPopover}
         anchorEl={openPopover}
         onClose={handleClosePopover}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <MenuList
           disablePadding
@@ -88,27 +117,39 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             p: 0.5,
             gap: 0.5,
             width: 140,
-            display: 'flex',
-            flexDirection: 'column',
+            display: "flex",
+            flexDirection: "column",
             [`& .${menuItemClasses.root}`]: {
               px: 1,
               gap: 2,
               borderRadius: 0.75,
-              [`&.${menuItemClasses.selected}`]: { bgcolor: 'action.selected' },
+              [`&.${menuItemClasses.selected}`]: { bgcolor: "action.selected" },
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem onClick={handeSelectRow}>
             <Iconify icon="solar:pen-bold" />
             Edit
           </MenuItem>
 
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
-            <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
-          </MenuItem>
+          {!row.is_active ? (
+            <MenuItem onClick={handleStatusUser} sx={{ color: "success.main" }}>
+              <Iconify icon="solar:shield-check-bold" />
+              Activar
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={handleStatusUser} sx={{ color: "error.main" }}>
+              <Iconify icon="solar:shield-cross-bold" />
+              Desactivar
+            </MenuItem>
+          )}
         </MenuList>
       </Popover>
+      <NewUsuarios
+        userData={userData}
+        openF={open}
+        handleCloseF={() => handleClose()}
+      />
     </>
   );
 }

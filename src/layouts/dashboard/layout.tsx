@@ -6,9 +6,9 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import { useTheme } from '@mui/material/styles';
 
-import {_notifications } from 'src/_mock';
+import {_notifications } from '../../_mock';
 
-import { Iconify } from 'src/components/iconify';
+import { Iconify } from '../../components/iconify';
 
 import { Main } from './main';
 import { layoutClasses } from '../classes';
@@ -87,12 +87,12 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                       icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
                     },
                     {
-                      label: 'Profile',
+                      label: 'Perfil',
                       href: '#',
                       icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
                     },
                     {
-                      label: 'Settings',
+                      label: 'Configuracion',
                       href: '#',
                       icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
                     },

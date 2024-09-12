@@ -1,6 +1,6 @@
-import type { UserProps } from './user-table-row';
-
 // ----------------------------------------------------------------------
+
+import type { Users } from "./user-types";
 
 export const visuallyHidden = {
   border: 0,
@@ -53,7 +53,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: UserProps[];
+  inputData: Users[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };

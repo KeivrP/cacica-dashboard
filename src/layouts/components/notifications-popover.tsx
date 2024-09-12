@@ -94,9 +94,9 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
       >
         <Box display="flex" alignItems="center" sx={{ py: 2, pl: 2.5, pr: 1.5 }}>
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="subtitle1">Notifications</Typography>
+            <Typography variant="subtitle1">Notificaciones</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              You have {totalUnRead} unread messages
+             Tienes {totalUnRead} mensajes sin leer
             </Typography>
           </Box>
 
@@ -116,7 +116,7 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                New
+                Nuevos
               </ListSubheader>
             }
           >
@@ -129,7 +129,7 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                Before that
+                Anteriores
               </ListSubheader>
             }
           >
@@ -143,7 +143,7 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
 
         <Box sx={{ p: 1 }}>
           <Button fullWidth disableRipple color="inherit">
-            View all
+            Ver todos
           </Button>
         </Box>
       </Popover>
