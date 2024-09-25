@@ -11,40 +11,40 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { DashboardContent } from '../../../layouts/dashboard';
 
-import { Iconify } from '../../..//components/iconify';
-import { Scrollbar } from '../../..//components/scrollbar';
+import { Iconify } from '../../../components/iconify';
+import { Scrollbar } from '../../../components/scrollbar';
 
-import { useGetUsers } from '../hook/useUser';
 import { TableNoData } from '../table-no-data';
-import { UserTableRow } from '../user-table-row';
-import { UserTableHead } from '../user-table-head';
+import { TargetTableRow } from '../targets-table-row';
+import { TargetTableHead } from '../targets-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
-import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-import type { Users } from '../user-types';
-import { NewUsuarios } from './user-new';
 import { renderFallback } from '../../../routes/sections';
+import { TargetsTableToolbar } from '../targets-table-toolbar';
+import { useGetTargets } from '../hook/useTargets';
+import { Targets } from '../targets-types';
+import { NewTargets } from './targets-new';
 
 // ----------------------------------------------------------------------
 
-export function UserView() {
-  const { data, isLoading } = useGetUsers();
+export function TargetsView() {
+  const { data, isLoading } = useGetTargets();
   const [open, setOpen] = useState(false);
 
   function handleClose() {
     setOpen(false);
   }
 
-  const UserData: Users[] = useMemo(() => data ?? [], [data, isLoading]);
+  const TargetData: Targets[] = useMemo(() => data ?? [], [data, isLoading]);
 
 
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: Users[] = applyFilter({
-    inputData: UserData || [],
+  const dataFiltered: Targets[] = applyFilter({
+    inputData: TargetData || [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -55,7 +55,7 @@ export function UserView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Usuarios
+          Objetivos
         </Typography>
         <Button
           onClick={() => setOpen(true)}
@@ -63,12 +63,12 @@ export function UserView() {
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
         >
-          Nuevo usuario
+          Nuevo Objetivo
         </Button>
       </Box>
 
       <Card>
-        <UserTableToolbar
+        <TargetsTableToolbar
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);
@@ -81,19 +81,16 @@ export function UserView() {
 
             <TableContainer sx={{ overflow: 'unset' }}>
               <Table sx={{ minWidth: 800 }}>
-                <UserTableHead
+                <TargetTableHead
                   order={table.order}
                   orderBy={table.orderBy}
-                  rowCount={UserData.length}
+                  rowCount={TargetData.length}
                   numSelected={table.selected.length}
                   onSort={table.onSort}
 
                   headLabel={[
+                    { id: 'nomeclature', label: 'ID' },
                     { id: 'name', label: 'Nombre' },
-                    { id: 'email', label: 'Email' },
-                    { id: 'role', label: 'Rol' },
-                    { id: 'branch', label: 'Sucursales' },
-                    { id: 'is_verified', label: 'Estatus' },
                     { id: '' },
                   ]}
                 />
@@ -104,7 +101,7 @@ export function UserView() {
                       table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row) => (
-                      <UserTableRow
+                      <TargetTableRow
                         key={row.id}
                         row={row}
                         selected={table.selected.includes(row.id)}
@@ -114,7 +111,7 @@ export function UserView() {
 
                   <TableEmptyRows
                     height={68}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, UserData.length)}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, TargetData.length)}
                   />
 
                   {notFound && <TableNoData searchQuery={filterName} />}
@@ -134,8 +131,8 @@ export function UserView() {
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
       </Card>
+      <NewTargets openF={open} handleCloseF={() => handleClose()} />
 
-      <NewUsuarios openF={open} handleCloseF={() => handleClose()} />
     </DashboardContent>
   );
 }

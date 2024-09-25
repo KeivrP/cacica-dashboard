@@ -4,18 +4,20 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
-import { varAlpha } from 'src/theme/styles';
-import { AuthLayout } from 'src/layouts/auth';
-import { DashboardLayout } from 'src/layouts/dashboard';
+import { varAlpha } from '../theme/styles';
+import { AuthLayout } from '../layouts/auth';
+import { DashboardLayout } from '../layouts/dashboard';
 
 // ----------------------------------------------------------------------
 
-export const HomePage = lazy(() => import('src/pages/home'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
-export const UserPage = lazy(() => import('src/pages/user'));
-export const SignInPage = lazy(() => import('src/pages/sign-in'));
-export const ProductsPage = lazy(() => import('src/pages/products'));
-export const Page404 = lazy(() => import('src/pages/page-not-found'));
+export const HomePage = lazy(() => import('../pages/home'));
+export const TargetsPage = lazy(() => import('../pages/target'));
+export const SettingsPage = lazy(() => import('../pages/settings'));
+export const BlogPage = lazy(() => import('../pages/blog'));
+export const UserPage = lazy(() => import('../pages/user'));
+export const SignInPage = lazy(() => import('../pages/sign-in'));
+export const ProductsPage = lazy(() => import('../pages/products'));
+export const Page404 = lazy(() => import('../pages/page-not-found'));
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +47,7 @@ export function Router() {
       children: [
         { element: <HomePage />, index: true },
         { path: 'user', element: <UserPage /> },
+        { path: 'targets', element: <TargetsPage />},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
@@ -65,5 +68,9 @@ export function Router() {
       path: '*',
       element: <Navigate to="/404" replace />,
     },
+    {
+      path: 'settings',
+      element: <SettingsPage />,
+    }
   ]);
 }

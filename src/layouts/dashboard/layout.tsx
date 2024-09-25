@@ -38,6 +38,8 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
 
   const layoutQuery: Breakpoint = 'lg';
 
+
+
   return (
     <LayoutSection
       /** **************************************
@@ -93,7 +95,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                     },
                     {
                       label: 'Configuracion',
-                      href: '#',
+                      href: 'settings',
                       icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
                     },
                   ]}
