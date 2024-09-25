@@ -14,37 +14,37 @@ import { DashboardContent } from '../../../layouts/dashboard';
 import { Iconify } from '../../../components/iconify';
 import { Scrollbar } from '../../../components/scrollbar';
 
-import { useGetUsers } from '../hook/useTargets';
 import { TableNoData } from '../table-no-data';
 import { TargetTableRow } from '../targets-table-row';
 import { TargetTableHead } from '../targets-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-import type { Users } from '../targets-types';
-import { NewUsuarios } from './user-new';
 import { renderFallback } from '../../../routes/sections';
 import { TargetsTableToolbar } from '../targets-table-toolbar';
+import { useGetTargets } from '../hook/useTargets';
+import { Targets } from '../targets-types';
+import { NewTargets } from './targets-new';
 
 // ----------------------------------------------------------------------
 
 export function TargetsView() {
-  const { data, isLoading } = useGetUsers();
+  const { data, isLoading } = useGetTargets();
   const [open, setOpen] = useState(false);
 
   function handleClose() {
     setOpen(false);
   }
 
-  const UserData: Users[] = useMemo(() => data ?? [], [data, isLoading]);
+  const TargetData: Targets[] = useMemo(() => data ?? [], [data, isLoading]);
 
 
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: Users[] = applyFilter({
-    inputData: UserData || [],
+  const dataFiltered: Targets[] = applyFilter({
+    inputData: TargetData || [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -84,16 +84,13 @@ export function TargetsView() {
                 <TargetTableHead
                   order={table.order}
                   orderBy={table.orderBy}
-                  rowCount={UserData.length}
+                  rowCount={TargetData.length}
                   numSelected={table.selected.length}
                   onSort={table.onSort}
 
                   headLabel={[
+                    { id: 'nomeclature', label: 'ID' },
                     { id: 'name', label: 'Nombre' },
-                    { id: 'email', label: 'Email' },
-                    { id: 'role', label: 'Rol' },
-                    { id: 'branch', label: 'Sucursales' },
-                    { id: 'is_verified', label: 'Estatus' },
                     { id: '' },
                   ]}
                 />
@@ -114,7 +111,7 @@ export function TargetsView() {
 
                   <TableEmptyRows
                     height={68}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, UserData.length)}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, TargetData.length)}
                   />
 
                   {notFound && <TableNoData searchQuery={filterName} />}
@@ -134,8 +131,8 @@ export function TargetsView() {
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
       </Card>
+      <NewTargets openF={open} handleCloseF={() => handleClose()} />
 
-      <NewUsuarios openF={open} handleCloseF={() => handleClose()} />
     </DashboardContent>
   );
 }
