@@ -21,21 +21,21 @@ export const useGetUsers = () => {
 };
 
 export const useRoles = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["roles"],
     queryFn: getRoles,
   });
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, refetch };
 };
 
 export const useBranch = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["branch"],
     queryFn: getBranch,
   });
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, refetch };
 };
 
 export const useCreateUser = () => {

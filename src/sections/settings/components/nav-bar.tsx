@@ -10,7 +10,7 @@ export default function NavbarSettings() {
         <>
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" padding={2}>
             <Typography variant="h4">
-            Configuración
+            
             </Typography>
             <Box gap={1} display="flex" alignItems="center">
             <Searchbar />
