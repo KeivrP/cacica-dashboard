@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------
 
-import { Users } from "../user/user-types";
+import { Goals } from "./goals-types";
 
 
 export const visuallyHidden = {
@@ -54,7 +54,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: Users[];
+  inputData: Goals[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };
@@ -72,7 +72,7 @@ export function applyFilter({ inputData, comparator, filterName }: ApplyFilterPr
 
   if (filterName) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      (user) => user.target.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

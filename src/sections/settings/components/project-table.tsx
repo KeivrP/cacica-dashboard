@@ -47,6 +47,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                                     { id: 'fecini', label: 'Fecha Inicio' },
                                     { id: 'fecfin', label: 'Fecha Fin' },
                                     { id: 'status', label: 'Sucursal' },
+                                    { id: 'isactive', label: 'Activo' },
                                 ]}
                             />
                             <TableBody>

@@ -4,39 +4,52 @@ import Popover from "@mui/material/Popover";
 import TableRow from "@mui/material/TableRow";
 import MenuList from "@mui/material/MenuList";
 import TableCell from "@mui/material/TableCell";
-import { menuItemClasses } from "@mui/material/MenuItem";
-import { Projects } from "../proyect-types";
+import MenuItem, { menuItemClasses } from "@mui/material/MenuItem";
+import { MonthyTargets } from "../../goals/goals-types";
+import { IconButton } from "@mui/material";
+import { Iconify } from "../../../components/iconify";
 
 
 // ----------------------------------------------------------------------
 
-type ProjectTableProps = {
-  row: Projects;
+type MonthyTargetsTableProps = {
+  row: MonthyTargets;
   selected: boolean;
   onSelectRow: () => void;
 };
 
-export function ProjectTableRow({ row, selected }: ProjectTableProps) {
+export function MonthyTargetsTableRow({ row, selected }: MonthyTargetsTableProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
     null
   );
 
+  const handleOpenPopover = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setOpenPopover(event.currentTarget);
+    },
+    []
+  );
 
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
-
+  
 
 
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
-        <TableCell>{row.name}</TableCell>
+        <TableCell>{row.users.name}</TableCell>
+        <TableCell width={500}>{row.objective.name}</TableCell>
+        <TableCell>{row.month}</TableCell>
 
-        <TableCell>{row.start_date.toString()}</TableCell>
-        <TableCell>{row.end_date.toString()}</TableCell>
-        <TableCell>{row.branch_id}</TableCell>
-        <TableCell>{row.is_active }</TableCell>
+        <TableCell align="center">{row.target_planificado}</TableCell>
+        <TableCell align="center">{row.target_reportado}</TableCell>
+        <TableCell align="right">
+          <IconButton onClick={handleOpenPopover}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        </TableCell>
 
       </TableRow>
 
@@ -63,12 +76,15 @@ export function ProjectTableRow({ row, selected }: ProjectTableProps) {
             },
           }}
         >
+          <MenuItem onClick={(a)=> console.log(a)}> 
+            <Iconify icon="solar:pen-bold" />
+            Editar
+          </MenuItem>
 
-
-
+         
         </MenuList>
       </Popover>
-
+      
     </>
   );
 }

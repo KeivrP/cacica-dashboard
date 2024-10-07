@@ -20,18 +20,23 @@ export const navData = [
   },
   {
     title: 'Metas',
-    path: '/404', // products
-    icon: icon('ic-cart'),
-    info: (
+    path: '/goals', // products
+    icon: icon('ic-tagets'),
+   /*  info: (
       <Label color="error" variant="inverted">
         +3
       </Label>
-    ),
+    ), */
   },
   {
     title: 'Objetivos',
     path: '/targets', // blog
     icon: icon('ic-blog'),
+  },
+  {
+    title: 'Metas Mensuales',
+    path: '/monthly-target', // blog
+    icon: icon('ic-monthT'),
   },
 /*   {
     title: 'Sign in',

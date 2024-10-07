@@ -15,6 +15,8 @@ export const TargetsPage = lazy(() => import('../pages/target'));
 export const SettingsPage = lazy(() => import('../pages/settings'));
 export const BlogPage = lazy(() => import('../pages/blog'));
 export const UserPage = lazy(() => import('../pages/user'));
+export const GoalsPage = lazy(() => import('../pages/goals'));
+export const MonthlyTargetPage = lazy(() => import('../pages/monthly-target'));
 export const SignInPage = lazy(() => import('../pages/sign-in'));
 export const ProductsPage = lazy(() => import('../pages/products'));
 export const Page404 = lazy(() => import('../pages/page-not-found'));
@@ -50,6 +52,8 @@ export function Router() {
         { path: 'targets', element: <TargetsPage />},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        { path: 'goals', element: <GoalsPage /> },
+        { path: 'monthly-target', element: <MonthlyTargetPage /> },
       ],
     },
     {

@@ -1,6 +1,7 @@
 // ----------------------------------------------------------------------
 
-import { Users } from "../user/user-types";
+import { MonthyTargets } from "../goals/goals-types";
+
 
 
 export const visuallyHidden = {
@@ -54,7 +55,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: Users[];
+  inputData: MonthyTargets[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };
@@ -72,7 +73,7 @@ export function applyFilter({ inputData, comparator, filterName }: ApplyFilterPr
 
   if (filterName) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      (user) => user.users.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

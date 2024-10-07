@@ -21,5 +21,6 @@ export interface Projects {
     id:         number;
     name:       string;
     start_date: Date;
+    is_active:   boolean;
    }
    
