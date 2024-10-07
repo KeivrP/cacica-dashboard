@@ -69,7 +69,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                                 />
 
-                                {notFound && <TableNoData searchQuery={''} />}
+                                {notFound && <TableNoData searchQuery={'Proyectos'} />}
                             </TableBody>
                         </Table>
                     </TableContainer>

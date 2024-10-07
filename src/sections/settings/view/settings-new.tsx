@@ -15,6 +15,7 @@ import { Branch, Role } from "../../user/user-types";
 import { CreateProyect, Objective } from "../proyect-types";
 import { useCreateProjects } from "../hook/useSettings";
 import { useGetTargets } from "../../targets/hook/useTargets";
+import { useCustomSnackbar } from "../../../components/ui/snack";
 
 const icon = (
   <Iconify width={16} icon="solar:clipboard-add-outline" sx={{ mr: 0.5 }} />
@@ -37,20 +38,17 @@ export const NewProjects = ({
   roles,
   branch,
 }: NewProjectProps) => {
+  const { eSnack } = useCustomSnackbar();
+
+
+
   /*--------------Create----------------*/
   const { showLoading, hideLoading } = useBackdrop();
   const { mutate, isPending: createPending } = useCreateProjects();
 
   /*--------------Data----------------*/
   const { data: objetivos } = useGetTargets();
-  const objeData = useMemo(() => {
-    return (
-      objetivos?.map((item) => ({
-        id: item.id,
-        name: `${item.nomenclature} - ${item.name}`,
-      })) || []
-    );
-  }, [objetivos]);
+
 
   /*--------------State----------------*/
 
@@ -62,6 +60,19 @@ export const NewProjects = ({
     Objective[]
   >([]);
 
+  // --------------ObjetivosData----------------
+
+
+  const objeData = useMemo(() => {
+    return (
+      objetivos
+        ?.filter((item) => !objetivosSeleccionados.some((obj) => obj.id === item.id))
+        .map((item) => ({
+          id: item.id,
+          name: `${item.nomenclature} - ${item.name}`,
+        })) || []
+    );
+  }, [objetivos, objetivosSeleccionados]);
   /*--------------Form----------------*/
 
   const [name, setName] = useState<string>("");
@@ -133,8 +144,9 @@ export const NewProjects = ({
     }
     return value;
   };
-  
+
   const handleSaveObjective = () => {
+
     const updatedObjetivosSeleccionados = objetivosSeleccionados.map((obj) => {
       const rolesForObjective = rolesSeleccionados.find(
         (role) => role.objetivoID === obj.id
@@ -143,7 +155,12 @@ export const NewProjects = ({
         ...obj,
         roles: rolesForObjective ? rolesForObjective.roles : [],
       };
-    });
+    }).filter(obj => obj.goal && obj.roles.length > 0);
+
+    if (!updatedObjetivosSeleccionados.some((role) => role.id === nuevoObjetivo.id)) {
+      eSnack("El objetivo debe tener una meta y al menos un rol asignado.");
+      return;
+    }
 
     setObjetivosSeleccionados(updatedObjetivosSeleccionados);
     setMostrarOpciones(false);
@@ -152,7 +169,7 @@ export const NewProjects = ({
 
   const onSubmit = () => {
     if (!name || !startDate || !endDate || !branchID || objetivosSeleccionados.length === 0) {
-      alert("Todos los campos son obligatorios y deben estar completos.");
+      eSnack("Todos los campos son obligatorios y deben estar completos.");
       return;
     }
 
@@ -232,7 +249,7 @@ export const NewProjects = ({
             options={branch || []}
             value={branchID}
             onChange={(_event, value) => setBranchID(value!)}
-            getOptionLabel={(option) => option.name} // Asegúrate de que esto esté configurado
+            getOptionLabel={(option) => option.name}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -249,7 +266,7 @@ export const NewProjects = ({
               options={objeData}
               value={nuevoObjetivo}
               onChange={handleObjetivoChange}
-              getOptionLabel={(option) => option.name} // Asegúrate de que esto esté configurado
+              getOptionLabel={(option) => option.name}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -338,15 +355,25 @@ export const NewProjects = ({
         )}
         <br />
         {!mostrarOpciones && objetivosSeleccionados.length > 0 && (
-          <>
+          <Grid container spacing={2} padding={2}>
             {objetivosSeleccionados.map((obj) => (
-              <Chip
-                key={obj.id}
-                label={obj.name}
-                onDelete={removeObjective(obj.id)}
-              />
+              <Grid item key={obj.id}>
+                <Chip
+                  color="primary"
+                  label={obj.name}
+                  onDelete={removeObjective(obj.id)}
+                  style={{ padding: '8px' }}
+                  sx={{
+                    '& .MuiChip-deleteIcon': {
+                      '&:hover': {
+                        color: 'red',
+                      },
+                    },
+                  }}
+                />
+              </Grid>
             ))}
-          </>
+          </Grid>
         )}
       </Grid>
     </BaseDialog>
