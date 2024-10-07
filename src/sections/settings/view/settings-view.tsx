@@ -1,43 +1,69 @@
-import {
-  Grid,
-  Typography,
-  List,
-  Container,
-} from "@mui/material";
+import { Grid, Typography, List, Box, Button } from "@mui/material";
 import NavbarSettings from "../components/nav-bar";
 import { useBranch, useRoles } from "../../user/hook/useUser";
-import RolesCard from "../components/role-card+s";
-import BranchCard from "../components/branch-card";
+import ProjectTable from "../components/project-table";
+import { Iconify } from "../../../components/iconify";
+import { DashboardContent } from "../../../layouts/dashboard";
+import { useState } from "react";
+import { NewProjects } from "./settings-new";
+import { useGetProjects } from "../hook/useSettings";
+import CardSettings from "../../../components/card/CardSettings";
+import NewBranch from "./branch-new";
+import NewRol from "./rol-new";
 
 export default function SettingsView() {
-  const proyecto = {
-    nombre: "Proyecto 1",
-    periodo: "2021-2022",
-  };
   const { data: roles } = useRoles();
   const { data: branch } = useBranch();
+  const { data: projects } = useGetProjects();
+
+  const [open, setOpen] = useState(false);
+  const [openBranch, setOpenBranch] = useState(false);
+  const [openRoles, setOpenRoles] = useState(false);
+
 
   return (
-    <Container>
+    <>
       <NavbarSettings />
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h6">Proyecto en Curso</Typography>
-          <Typography>
-            {proyecto.nombre} - {proyecto.periodo}
+      <DashboardContent>
+        <Box display="flex" alignItems="center" mb={2} padding={2}>
+          <Typography variant="h4" flexGrow={1}>
+            Configuracion
           </Typography>
+          <Button
+            onClick={() => setOpen(true)}
+            variant="contained"
+            color="inherit"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+          >
+            Nuevo Proyecto
+          </Button>
+        </Box>
+
+        <Grid container spacing={2} paddingX={4}>
+          <Grid item xs={12} sm={12} md={12} alignItems="flex-end">
+            <Typography variant="h6">Proyecto en Curso</Typography>
+            <ProjectTable data={projects!} isLoading={false} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6} alignItems="flex-end">
+            <List>
+              <CardSettings addData={() => setOpenRoles(true)} title="Roles" data={roles!} />
+            </List>
+          </Grid>
+          <Grid item xs={12} sm={6} md={6} alignItems="flex-end">
+            <CardSettings addData={() => setOpenBranch(true)} title="Sucursales" data={branch!} />
+          </Grid>
         </Grid>
-        <Grid item xs={6} alignItems="flex-start">
-          <Typography variant="h6">Roles</Typography>
-          <List>
-            <RolesCard data={roles} />
-          </List>
-        </Grid>
-        <Grid item xs={6} alignItems="flex-end">
-          <Typography variant="h6">Sucursales</Typography>
-          <BranchCard data={branch} />
-        </Grid>
-      </Grid>
-    </Container>
+      </DashboardContent>
+      <NewProjects
+        roles={roles!}
+        branch={branch!}
+        openF={open}
+        handleCloseF={() => setOpen(false)}
+      />
+      <NewBranch  openF={openBranch} handleCloseF={() => setOpenBranch(false)} />
+      <NewRol openF={openRoles} handleCloseF={() => setOpenRoles(false)} />
+
+
+    </>
   );
 }

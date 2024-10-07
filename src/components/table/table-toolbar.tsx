@@ -2,18 +2,19 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import { Iconify } from '../../components/iconify';
+import { Iconify } from '../iconify';
 
 
 // ----------------------------------------------------------------------
 
-type TargetsTableToolbarProps = {
+type TableToolbarProps = {
+  plaholder?: string;
   numSelected?: number;
   filterName: string;
   onFilterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function TargetsTableToolbar({ numSelected = 0, filterName, onFilterName }: TargetsTableToolbarProps) {
+export function TableToolbar({ numSelected = 0, filterName, onFilterName, plaholder= "Buscar ..." }: TableToolbarProps) {
   return (
     <Toolbar
       sx={{
@@ -36,7 +37,7 @@ export function TargetsTableToolbar({ numSelected = 0, filterName, onFilterName 
           fullWidth
           value={filterName}
           onChange={onFilterName}
-          placeholder="Buscar Objetivo..."
+          placeholder={plaholder}
           startAdornment={
             <InputAdornment position="start">
               <Iconify width={20} icon="eva:search-fill" sx={{ color: 'text.disabled' }} />

@@ -1,30 +1,34 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState } from "react";
 
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Table from "@mui/material/Table";
+import Button from "@mui/material/Button";
+import TableBody from "@mui/material/TableBody";
+import Typography from "@mui/material/Typography";
+import TableContainer from "@mui/material/TableContainer";
+import TablePagination from "@mui/material/TablePagination";
 
-import { DashboardContent } from '../../../layouts/dashboard';
+import { DashboardContent } from "../../../layouts/dashboard";
 
-import { Iconify } from '../../../components/iconify';
-import { Scrollbar } from '../../../components/scrollbar';
+import { Iconify } from "../../../components/iconify";
+import { Scrollbar } from "../../../components/scrollbar";
 
-import { TableNoData } from '../table-no-data';
-import { TargetTableRow } from '../targets-table-row';
-import { TargetTableHead } from '../targets-table-head';
-import { TableEmptyRows } from '../table-empty-rows';
-import { emptyRows, applyFilter, getComparator } from '../utils';
+import { TargetTableRow } from "../targets-table-row";
+import { emptyRows, applyFilter, getComparator } from "../utils";
 
-import { renderFallback } from '../../../routes/sections';
-import { TargetsTableToolbar } from '../targets-table-toolbar';
-import { useGetTargets } from '../hook/useTargets';
-import { Targets } from '../targets-types';
-import { NewTargets } from './targets-new';
+import { renderFallback } from "../../../routes/sections";
+import {
+  TableToolbar,
+} from "../../../components/table/table-toolbar";
+import { useGetTargets } from "../hook/useTargets";
+import { Targets } from "../targets-types";
+import { NewTargets } from "./targets-new";
+import { TableHeadComponets } from "../../../components/table/table-head";
+import { TableEmptyRows } from "../../../components/table/table-empty-rows";
+import { TableNoData } from "../../../components/table/table-no-data";
+import { useTable } from "../../../components/table/table-componets";
+
 
 // ----------------------------------------------------------------------
 
@@ -38,10 +42,9 @@ export function TargetsView() {
 
   const TargetData: Targets[] = useMemo(() => data ?? [], [data, isLoading]);
 
-
   const table = useTable();
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const dataFiltered: Targets[] = applyFilter({
     inputData: TargetData || [],
@@ -68,7 +71,8 @@ export function TargetsView() {
       </Box>
 
       <Card>
-        <TargetsTableToolbar
+        <TableToolbar
+          plaholder="Buscar Obejtivos..."
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);
@@ -77,28 +81,28 @@ export function TargetsView() {
         />
 
         <Scrollbar>
-          {isLoading ? renderFallback : (
-
-            <TableContainer sx={{ overflow: 'unset' }}>
+          {isLoading ? (
+            renderFallback
+          ) : (
+            <TableContainer sx={{ overflow: "unset" }}>
               <Table sx={{ minWidth: 800 }}>
-                <TargetTableHead
+                <TableHeadComponets
                   order={table.order}
                   orderBy={table.orderBy}
                   rowCount={TargetData.length}
                   numSelected={table.selected.length}
                   onSort={table.onSort}
-
                   headLabel={[
-                    { id: 'nomeclature', label: 'ID' },
-                    { id: 'name', label: 'Nombre' },
-                    { id: '' },
+                    { id: "nomeclature", label: "ID" },
+                    { id: "name", label: "Nombre" },
+                    { id: "" },
                   ]}
                 />
                 <TableBody>
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage,
+                      table.page * table.rowsPerPage + table.rowsPerPage
                     )
                     .map((row) => (
                       <TargetTableRow
@@ -111,7 +115,11 @@ export function TargetsView() {
 
                   <TableEmptyRows
                     height={68}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, TargetData.length)}
+                    emptyRows={emptyRows(
+                      table.page,
+                      table.rowsPerPage,
+                      TargetData.length
+                    )}
                   />
 
                   {notFound && <TableNoData searchQuery={filterName} />}
@@ -132,75 +140,7 @@ export function TargetsView() {
         />
       </Card>
       <NewTargets openF={open} handleCloseF={() => handleClose()} />
-
     </DashboardContent>
   );
 }
 
-// ----------------------------------------------------------------------
-
-export function useTable() {
-  const [page, setPage] = useState(0);
-  const [orderBy, setOrderBy] = useState('name');
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-
-  const onSort = useCallback(
-    (id: string) => {
-      const isAsc = orderBy === id && order === 'asc';
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
-    },
-    [order, orderBy],
-  );
-
-  const onSelectAllRows = useCallback((checked: boolean, newSelecteds: string[]) => {
-    if (checked) {
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  }, []);
-
-  const onSelectRow = useCallback(
-    (inputValue: string) => {
-      const newSelected = selected.includes(inputValue)
-        ? selected.filter((value) => value !== inputValue)
-        : [...selected, inputValue];
-
-      setSelected(newSelected);
-    },
-    [selected],
-  );
-
-  const onResetPage = useCallback(() => {
-    setPage(0);
-  }, []);
-
-  const onChangePage = useCallback((_event: unknown, newPage: number) => {
-    setPage(newPage);
-  }, []);
-
-  const onChangeRowsPerPage = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      onResetPage();
-    },
-    [onResetPage],
-  );
-
-  return {
-    page,
-    order,
-    onSort,
-    orderBy,
-    selected,
-    rowsPerPage,
-    onSelectRow,
-    onResetPage,
-    onChangePage,
-    onSelectAllRows,
-    onChangeRowsPerPage,
-  };
-}
