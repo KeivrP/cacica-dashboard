@@ -60,8 +60,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                                         <ProjectTableRow
                                             key={row.id}
                                             row={row}
-                                            selected={table.selected.includes(row.id.toString())}
-                                            onSelectRow={() => table.onSelectRow(row.id.toString())}
+                                            selected={table.selected.includes(row.name)}
+                                            onSelectRow={() => table.onSelectRow(row.name)}
                                         />
                                     ))}
 

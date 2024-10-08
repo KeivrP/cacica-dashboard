@@ -21,6 +21,7 @@ export interface Goals {
     target_reportado:   null;
     user_id:            string;
     users:              Users;
+    is_closed:          boolean;
    }
 
 

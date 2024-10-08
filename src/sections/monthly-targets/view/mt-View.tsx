@@ -23,19 +23,40 @@ import { useBranch } from "../../user/hook/useUser";
 import { Select } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { useGetMonthlyTargets } from "../../goals/hook/useGoals";
-import { applyFilter, emptyRows, getComparator } from "../utils";
+import { applyFilter, convertMonthAndYearToSpanish, emptyRows, getComparator } from "../utils";
 import { MonthyTargetsTableRow } from "../components/mt-table-row";
+import { Button } from "@mui/material";
+import { Iconify } from "../../../components/iconify";
+import AlertDialogSlide from "../../../components/dialog/AlertDialogSlide";
+import { useCloseMonthly } from "../hook/useMT";
+import { useBackdrop } from "../../../components/ui/backdrop";
 
 // ----------------------------------------------------------------------
 
 export function MonthlyTargetView() {
 
-    const { data, isLoading, error, refetch } = useGetMonthlyTargets();
-    const { data: branches, isLoading: isLoadingBranches } = useBranch();
+    const { data, isLoading } = useGetMonthlyTargets();
+    const { data: branches } = useBranch();
+    const { mutate, isPending } = useCloseMonthly();
+    const [open, setOpen] = useState(false);
+    const { showLoading, hideLoading } = useBackdrop();
+
+    useEffect(() => {
+        if (isPending) {
+
+
+            showLoading('');
+        } else {
+            hideLoading()
+        }
+    }, [isPending])
+
 
     const [selectedBranch, setSelectedBranch] = useState(branches?.[0]?.id);
 
-    const filteredDataActive = useMemo(() => data?.filter(item => item.project.is_active), [data]);
+    const filteredDataActive = useMemo(() => {
+        return data?.filter(item => item.project.is_active && Number(item.target_planificado) !== 0);
+    }, [data]);
 
     const filteredData = useMemo(() => {
         if (!selectedBranch) return filteredDataActive;
@@ -61,9 +82,6 @@ export function MonthlyTargetView() {
 
     }, [branches]);
 
-
-
-
     const filteredDataByMonth = useMemo(() => {
         if (!selectedMonth) return filteredData;
         return filteredData?.filter((item) => item.month === selectedMonth);
@@ -83,9 +101,13 @@ export function MonthlyTargetView() {
     const GoalsTargetData = useMemo(() => dataFiltered, [dataFiltered]);
     const notFound = !dataFiltered.length && !!filterName;
 
+    const closedMes = dataFiltered.filter((item) => item.is_closed === true);
+
+
     const SelectMonthlyTargets = () => {
         return (
             <Box display="flex" gap={2}>
+
                 <Select
                     value={selectedBranch}
                     onChange={(event) => {
@@ -102,6 +124,7 @@ export function MonthlyTargetView() {
                     ))}
                 </Select>
 
+
                 <Select
                     value={selectedMonth}
                     onChange={(event) => {
@@ -110,16 +133,57 @@ export function MonthlyTargetView() {
                     }}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Mes' }}
+                    sx={{
+                        '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: closedMes.some(item => item.month === selectedMonth) ? 'red' : 'inherit',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: closedMes.some(item => item.month === selectedMonth) ? 'red' : 'inherit',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: closedMes.some(item => item.month === selectedMonth) ? 'red' : 'inherit',
+                        },
+                    }}
                 >
                     {months.map((month) => (
-                        <MenuItem key={month.value} value={month.value}>
-                            {month.label}
+                        <MenuItem
+                            key={month.value}
+                            value={month.value}
+                            style={{ color: closedMes.some(item => item.month === month.value) ? 'red' : 'inherit' }}
+                        >
+                            {convertMonthAndYearToSpanish(month.label)}
                         </MenuItem>
                     ))}
                 </Select>
             </Box>
         );
     }
+
+    const confirmCloseMonthly = () => {
+        if (!selectedMonth) return null;
+        if (filteredData?.length === 0) return null;
+console.log(filteredData)
+
+        const projectIds = filteredData?.[0]?.project_id;
+        setOpen(false);
+        mutate({ projectId: projectIds ?? 0, month: selectedMonth });
+    };
+
+
+    const closeMonthly = () => {
+        if (!selectedMonth || closedMes.length > 0) return null;
+
+        return (
+            <Button
+                onClick={() => setOpen(true)}
+                variant="contained"
+                color="inherit"
+                startIcon={<Iconify icon="hugeicons:ramadhan-month" />}
+            >
+                Cerrar mes {convertMonthAndYearToSpanish(selectedMonth)}
+            </Button>
+        );
+    };
 
 
     return (
@@ -128,6 +192,7 @@ export function MonthlyTargetView() {
                 <Typography variant="h4" flexGrow={1}>
                     Metas Mensuales
                 </Typography>
+                {closeMonthly()}
             </Box>
 
             <Card>
@@ -206,6 +271,8 @@ export function MonthlyTargetView() {
                     onRowsPerPageChange={table.onChangeRowsPerPage}
                 />
             </Card>
+
+            <AlertDialogSlide title={"Cerrar mes en Proceso"} message={`¿Confirma que desea cerrar el mes de ${convertMonthAndYearToSpanish(selectedMonth)}? Tenga en cuenta que esta acción es irreversible.`} onConfirm={confirmCloseMonthly} open={open} close={() => setOpen(false)} />
 
         </DashboardContent>
     );

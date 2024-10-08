@@ -8,6 +8,8 @@ import MenuItem, { menuItemClasses } from "@mui/material/MenuItem";
 import { MonthyTargets } from "../../goals/goals-types";
 import { IconButton } from "@mui/material";
 import { Iconify } from "../../../components/iconify";
+import AddTarget from "../view/mt-Add";
+import { convertMonthAndYearToSpanish } from "../utils";
 
 
 // ----------------------------------------------------------------------
@@ -19,9 +21,8 @@ type MonthyTargetsTableProps = {
 };
 
 export function MonthyTargetsTableRow({ row, selected }: MonthyTargetsTableProps) {
-  const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
-    null
-  );
+  const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = useState(false);
 
   const handleOpenPopover = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,23 +34,24 @@ export function MonthyTargetsTableRow({ row, selected }: MonthyTargetsTableProps
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
-  
+
 
 
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell>{row.users.name}</TableCell>
-        <TableCell width={500}>{row.objective.name}</TableCell>
-        <TableCell>{row.month}</TableCell>
+        <TableCell width={400}>{row.objective.name}</TableCell>
+        <TableCell>{convertMonthAndYearToSpanish(row.month)}</TableCell>
 
         <TableCell align="center">{row.target_planificado}</TableCell>
         <TableCell align="center">{row.target_reportado}</TableCell>
-        <TableCell align="right">
+        {row.is_closed || Number(row.target_planificado) === 0 ? null : <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-        </TableCell>
+        </TableCell>}
+
 
       </TableRow>
 
@@ -76,15 +78,13 @@ export function MonthyTargetsTableRow({ row, selected }: MonthyTargetsTableProps
             },
           }}
         >
-          <MenuItem onClick={(a)=> console.log(a)}> 
+          <MenuItem onClick={() => { setOpen(true); handleClosePopover(); }}>
             <Iconify icon="solar:pen-bold" />
-            Editar
+            Registrar
           </MenuItem>
-
-         
         </MenuList>
       </Popover>
-      
+      <AddTarget openF={open} handleCloseF={() => setOpen(false)} id={row.id} />
     </>
   );
 }

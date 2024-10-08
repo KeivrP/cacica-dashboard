@@ -33,8 +33,8 @@ export function ProjectTableRow({ row, selected }: ProjectTableProps) {
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell>{row.name}</TableCell>
 
-        <TableCell>{row.start_date.toString()}</TableCell>
-        <TableCell>{row.end_date.toString()}</TableCell>
+        <TableCell>{new Date(row.start_date).toLocaleDateString('default', { month: 'long', year: 'numeric' })}</TableCell>
+        <TableCell>{new Date(row.end_date).toLocaleDateString('default', { month: 'long', year: 'numeric' })}</TableCell>
         <TableCell>{row.branch_id}</TableCell>
         <TableCell>{row.is_active }</TableCell>
 

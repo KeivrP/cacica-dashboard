@@ -13,10 +13,12 @@ import { AnalyticsWebsiteVisits } from "../analytics-website-visits";
 import { AnalyticsWidgetSummary } from "../analytics-widget-summary";
 import { AnalyticsCurrentSubject } from "../analytics-current-subject";
 import { AnalyticsConversionRates } from "../analytics-conversion-rates";
+import MonthlyTargetsAnalytics from "../components/monthly-targets-anlitycs";
 
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
+
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
@@ -134,27 +136,9 @@ export function OverviewAnalyticsView() {
         </Grid>
 
         <Grid xs={12} md={6} lg={8}>
-          <AnalyticsWebsiteVisits
-            title="Website visits"
-            subheader="(+43%) than last year"
-            chart={{
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-              ],
-              series: [
-                { name: "Team A", data: [43, 33, 22, 37, 67, 68, 37, 24, 55] },
-                { name: "Team B", data: [51, 70, 47, 67, 40, 37, 24, 70, 24] },
-              ],
-            }}
-          />
+
+          <MonthlyTargetsAnalytics />
+
         </Grid>
 
         <Grid xs={12} md={6} lg={8}>
