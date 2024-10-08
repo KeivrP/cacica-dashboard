@@ -7,8 +7,8 @@ import Popover from '@mui/material/Popover';
 import MenuList from '@mui/material/MenuList';
 import Typography from '@mui/material/Typography';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
+import { Iconify } from '../../components/iconify';
 
-import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 

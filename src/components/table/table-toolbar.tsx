@@ -12,9 +12,10 @@ type TableToolbarProps = {
   numSelected?: number;
   filterName: string;
   onFilterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  children?: React.ReactNode;
 };
 
-export function TableToolbar({ numSelected = 0, filterName, onFilterName, plaholder= "Buscar ..." }: TableToolbarProps) {
+export function TableToolbar({ numSelected = 0, filterName, onFilterName, plaholder= "Buscar ...", children }: TableToolbarProps) {
   return (
     <Toolbar
       sx={{
@@ -47,19 +48,7 @@ export function TableToolbar({ numSelected = 0, filterName, onFilterName, plahol
         />
       )}
 
-      {/* {numSelected ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Iconify icon="solar:trash-bin-trash-bold" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
-      )} */}
+      {children}
     </Toolbar>
   );
 }

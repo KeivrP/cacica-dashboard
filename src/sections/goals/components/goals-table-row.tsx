@@ -5,18 +5,18 @@ import TableRow from "@mui/material/TableRow";
 import MenuList from "@mui/material/MenuList";
 import TableCell from "@mui/material/TableCell";
 import { menuItemClasses } from "@mui/material/MenuItem";
-import { Projects } from "../proyect-types";
+import { Goals } from "../goals-types";
 
 
 // ----------------------------------------------------------------------
 
-type ProjectTableProps = {
-  row: Projects;
+type GoalsTableProps = {
+  row: Goals;
   selected: boolean;
   onSelectRow: () => void;
 };
 
-export function ProjectTableRow({ row, selected }: ProjectTableProps) {
+export function GoalsTableRow({ row, selected }: GoalsTableProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
     null
   );
@@ -31,12 +31,9 @@ export function ProjectTableRow({ row, selected }: ProjectTableProps) {
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
-        <TableCell>{row.name}</TableCell>
-
-        <TableCell>{new Date(row.start_date).toLocaleDateString('default', { month: 'long', year: 'numeric' })}</TableCell>
-        <TableCell>{new Date(row.end_date).toLocaleDateString('default', { month: 'long', year: 'numeric' })}</TableCell>
-        <TableCell>{row.branch_id}</TableCell>
-        <TableCell>{row.is_active }</TableCell>
+        <TableCell>{row.target?.name ?? 'N/A'}</TableCell>
+        <TableCell>{row.project?.name ?? 'N/A'}</TableCell>
+        <TableCell>{row.general_target}</TableCell>
 
       </TableRow>
 

@@ -47,6 +47,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                                     { id: 'fecini', label: 'Fecha Inicio' },
                                     { id: 'fecfin', label: 'Fecha Fin' },
                                     { id: 'status', label: 'Sucursal' },
+                                    { id: 'isactive', label: 'Activo' },
                                 ]}
                             />
                             <TableBody>
@@ -59,8 +60,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                                         <ProjectTableRow
                                             key={row.id}
                                             row={row}
-                                            selected={table.selected.includes(row.id.toString())}
-                                            onSelectRow={() => table.onSelectRow(row.id.toString())}
+                                            selected={table.selected.includes(row.name)}
+                                            onSelectRow={() => table.onSelectRow(row.name)}
                                         />
                                     ))}
 
